@@ -1,53 +1,42 @@
-// api/create-payment.js
-// Creates a NowPayments invoice and returns { invoice_id, payment_url, order_id }
-
 export default async function handler(req, res) {
-  if (req.method !== "POST") return res.status(405).json({ error: "Method not allowed" });
-
-  const API_KEY = process.env.NOWPAYMENTS_API_KEY;
-  if (!API_KEY) return res.status(500).json({ error: "NOWPAYMENTS_API_KEY missing in env" });
+  if (req.method !== "POST") {
+    return res.status(405).json({ error: "Method not allowed" });
+  }
 
   try {
-    const orderId = `ciphervault-${Date.now()}`;
-    const payload = {
-      price_amount: 14.99,
-      price_currency: "usd",
-      order_id: orderId,
-      pay_currency: "any",
-      ipn_callback_url: "https://ciphervault.vip/api/nowpayments-webhook", // optional - you can implement later
-      success_url: "https://ciphervault.vip/thank-you"
-    };
+    const { NOWPAYMENTS_API_KEY, NOWPAYMENTS_PUBLIC_KEY } = process.env;
 
-    const nowResp = await fetch("https://api.nowpayments.io/v1/invoice", {
+    if (!NOWPAYMENTS_API_KEY || !NOWPAYMENTS_PUBLIC_KEY) {
+      return res.status(500).json({ error: "Missing API keys" });
+    }
+
+    const response = await fetch("https://api.nowpayments.io/v1/invoice", {
       method: "POST",
       headers: {
-        "x-api-key": API_KEY,
+        "x-api-key": NOWPAYMENTS_API_KEY,
         "Content-Type": "application/json"
       },
-      body: JSON.stringify(payload)
+      body: JSON.stringify({
+        price_amount: 14.99,
+        price_currency: "usd",
+        pay_currency: "usdt",   // <<< FIXED CURRENCY (previous ANY was failing)
+        order_description: "CipherVault Lifetime Purchase",
+        success_url: "https://www.ciphervault.vip/thank-you.html",
+        cancel_url: "https://www.ciphervault.vip/"
+      })
     });
 
-    const data = await nowResp.json();
+    const data = await response.json();
 
-    if (!nowResp.ok || !data) {
-      return res.status(500).json({ error: "NowPayments error", details: data });
+    if (!response.ok) {
+      console.error("NOWPayments error:", data);
+      return res.status(500).json({ error: "Payment creation failed", details: data });
     }
 
-    // NowPayments returns an id and invoice_url (may vary); handle common keys:
-    const invoiceId = data.id || data.invoice_id || data.invoiceId;
-    const invoiceUrl = data.invoice_url || data.invoiceUrl || data.url || data.checkout_url || data.payment_url;
+    res.status(200).json({ invoice_url: data.invoice_url });
 
-    if (!invoiceId || !invoiceUrl) {
-      return res.status(500).json({ error: "Unexpected NowPayments response", details: data });
-    }
-
-    return res.status(200).json({
-      invoice_id: invoiceId,
-      payment_url: invoiceUrl,
-      order_id: orderId
-    });
   } catch (err) {
-    console.error("create-payment error:", err);
-    return res.status(500).json({ error: "Internal server error" });
+    console.error("Server error:", err);
+    res.status(500).json({ error: "Server error" });
   }
 }
