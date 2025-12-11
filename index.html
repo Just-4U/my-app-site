@@ -165,19 +165,48 @@
     </footer>
   </main>
 
- <script>
+<script>
 async function startPayment() {
   try {
-    const resp = await fetch("/api/create-payment", { method: "POST", headers: { "Content-Type": "application/json" }});
+    const resp = await fetch("/api/create-payment", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" }
+    });
+
     const json = await resp.json();
-    if (json && json.payment_url && json.invoice_id) {
-      // Save invoice id so thank-you page can exchange it later
-      try { localStorage.setItem("ciphervault_invoice_id", json.invoice_id); } catch(e) { /* ignore */ }
-      window.location.href = json.payment_url;
-    } else {
-      console.error("Create payment failed", json);
-      alert("Could not create payment. Try again.");
+
+    // Accept either invoice_url or payment_url (some responses use different names)
+    const invoiceUrl = json?.invoice_url || json?.payment_url || null;
+
+    if (invoiceUrl) {
+      // Try to get an invoice id from the JSON (common keys) or from the URL query params
+      let invoiceId = json?.invoice_id || json?.id || null;
+
+      if (!invoiceId) {
+        try {
+          const parsed = new URL(invoiceUrl);
+          invoiceId = parsed.searchParams.get("iid") 
+                   || parsed.searchParams.get("invoice_id")
+                   || parsed.searchParams.get("id") 
+                   || null;
+        } catch (e) {
+          // ignore parse errors
+        }
+      }
+
+      // Save invoice id (if we found one) so thank-you page can call /api/exchange
+      try {
+        if (invoiceId) localStorage.setItem("ciphervault_invoice_id", invoiceId);
+      } catch (e) { /* ignore storage errors */ }
+
+      // Redirect user to the payment page created by NowPayments
+      window.location.href = invoiceUrl;
+      return;
     }
+
+    // If we reach here, invoice creation failed
+    console.error("Create payment failed", json);
+    alert("Could not create payment. Try again.");
   } catch (err) {
     console.error(err);
     alert("Server error. Try again.");
@@ -186,5 +215,7 @@ async function startPayment() {
 </script>
 
 
+
 </body>
 </html>
+
