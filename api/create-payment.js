@@ -14,10 +14,10 @@ export default async function handler(req, res) {
       },
       body: JSON.stringify({
         price_amount: 14.99,
-        price_currency: "usd",
+        price_currency: "USD",
 
-        // 🔥 FIX: do not use ANY or USDT
-        pay_currency: "usdt_trc20",
+        // 🔥 Correct code for USDT TRON (Invoice endpoint)
+        pay_currency: "USDTTRC20",
 
         order_description: "CipherVault Lifetime Purchase",
         success_url: "https://www.ciphervault.vip/thank-you.html",
