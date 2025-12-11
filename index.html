@@ -1,327 +1,190 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <title>CipherVault – Offline Encrypted Password Vault for Android</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="description"
-          content="CipherVault is an offline, PIN-locked Android password vault with biometric unlock, encrypted backups, and no cloud, account, or tracking." />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>CipherVault — Offline Encrypted Password Vault for Android</title>
+  <meta name="description" content="CipherVault is an offline, PIN-locked Android password vault with fingerprint unlock, encrypted backups, no cloud, no accounts." />
+  <meta name="keywords" content="password manager android, offline password vault, encrypted password storage, CipherVault" />
+  <link rel="canonical" href="https://ciphervault.vip" />
+  <meta name="robots" content="index, follow">
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-	<link rel="icon" type="image/png" href="favicon1.png">
+  <!-- Social preview -->
+  <meta property="og:title" content="CipherVault — Offline Password Vault for Android" />
+  <meta property="og:description" content="Offline, encrypted, PIN-locked password manager. No cloud, no account, no tracking." />
+  <meta property="og:image" content="https://ciphervault.vip/main_screen.jpg" />
+  <meta property="og:url" content="https://ciphervault.vip" />
+  <meta name="twitter:card" content="summary_large_image" />
 
-    <style>
-        :root {
-            --bg: #050914;
-            --bg-alt: #060d1c;
-            --card: rgba(10, 19, 40, 0.9);
-            --card-soft: rgba(12, 23, 48, 0.85);
-            --accent: #3aa9ff;
-            --accent-strong: #4ac6ff;
-            --accent-soft: #235bff;
-            --text-main: #f9fcff;
-            --text-muted: #a9b7d6;
-        }
+  <!-- If you later want TikTok Pixel, tell me the Pixel ID and I will add the snippet here -->
+  <!-- TIKTOK PIXEL PLACEHOLDER -->
 
-        body {
-            margin: 0;
-            font-family: "Inter", sans-serif;
-            background: radial-gradient(circle at top, #102852 0, #040814 55%, #02040a 100%);
-            color: var(--text-main);
-        }
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="icon" type="image/png" href="favicon1.png" />
 
-        img { display: block; max-width: 100%; }
+  <style>
+    /* Mobile-first, simple, fast */
+    :root{
+      --bg:#050914; --card:#0b1a36; --muted:#a9b7d6; --accent:#3aa9ff; --accent-strong:#4ac6ff; --text:#f9fcff;
+      --max-width: 920px;
+    }
+    html,body{height:100%;margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial;}
+    body{background:radial-gradient(circle at top,#102852 0,#040814 55%,#02040a 100%);color:var(--text);-webkit-font-smoothing:antialiased;}
+    .wrap{max-width:var(--max-width);margin:0 auto;padding:16px;}
+    header.site-header{position:sticky;top:0;z-index:40;background:rgba(5,9,20,0.85);backdrop-filter:blur(8px);border-bottom:1px solid rgba(255,255,255,0.03);}
+    .site-header .inner{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 16px;max-width:var(--max-width);margin:0 auto;}
+    .logo{display:flex;align-items:center;gap:10px}
+    .logo .badge{width:36px;height:36px;border-radius:9px;background:linear-gradient(135deg,var(--accent),var(--accent-strong));display:flex;align-items:center;justify-content:center;font-weight:700;box-shadow:0 8px 30px rgba(58,169,255,0.18);}
+    .brand{font-weight:700}
+    .cta-top{background:linear-gradient(90deg,var(--accent-strong),var(--accent));border-radius:999px;padding:8px 12px;color:#fff;font-weight:600;border:none;cursor:pointer}
 
-        .page {
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
+    /* Hero */
+    .hero{padding:22px 0;text-align:left}
+    .hero-title{font-size:clamp(20px,6vw,34px);margin:6px 0 10px 0;font-weight:700;line-height:1.05}
+    .hero-sub{color:var(--muted);margin:0 0 12px 0;max-width:640px}
 
-        /* NAV */
-        .nav {
-            position: sticky;
-            top: 0;
-            backdrop-filter: blur(16px);
-            background: rgba(5,9,20,0.95);
-            border-bottom: 1px solid rgba(255,255,255,0.05);
-            z-index: 50;
-        }
+    /* Features */
+    .features{display:grid;gap:8px;margin:12px 0 20px 0}
+    .feature{display:flex;gap:10px;align-items:flex-start;color:var(--muted);font-size:14px}
 
-        .nav-inner {
-            max-width: 1120px;
-            margin: 0 auto;
-            padding: 14px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+    /* Payment card / CTA block */
+    .card{background:linear-gradient(180deg,rgba(12,24,52,0.95),rgba(10,21,48,0.95));padding:18px;border-radius:14px;border:1px solid rgba(255,255,255,0.03);box-shadow:0 20px 60px rgba(0,0,0,0.6);margin-top:14px}
+    .price {font-size:26px;font-weight:700}
+    .price small{font-size:12px;color:var(--muted);font-weight:600;margin-left:6px}
+    .primary-btn{display:block;width:100%;margin-top:12px;padding:14px;border-radius:999px;border:none;background:linear-gradient(90deg,var(--accent-strong),var(--accent));color:#fff;font-weight:700;cursor:pointer;font-size:16px}
 
-        .logo-circle {
-            width: 34px;
-            height: 34px;
-            border-radius: 50%;
-            background: radial-gradient(circle at 30% 0, #3aa9ff 0, #204bff 40%, #050914 100%);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            box-shadow: 0 0 18px rgba(58,169,255,0.6);
-            font-weight: 700;
-        }
+    /* Screenshots grid — medium images */
+    .screenshots{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-top:18px}
+    .ss-card{width:320px;background:linear-gradient(180deg,rgba(7,12,22,0.5),rgba(8,14,28,0.5));border-radius:12px;padding:10px;border:1px solid rgba(255,255,255,0.03);box-shadow:0 12px 40px rgba(0,0,0,0.45)}
+    .ss-card img{display:block;width:100%;height:auto;border-radius:8px;object-fit:cover}
 
-        .nav-title { font-weight: 600; }
+    /* Trust / small bullets */
+    .trust{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:12px;color:var(--muted);font-size:13px}
+    .pill{background:rgba(255,255,255,0.03);padding:8px 10px;border-radius:999px;font-weight:600}
 
-        .nav-btn {
-            border-radius: 999px;
-            padding: 4px 4px;
-            background: linear-gradient(135deg, var(--accent-soft), var(--accent-strong));
-            box-shadow: 0 10px 24px rgba(58,169,255,0.4);
-            border: none;
-            color: #fff;
-            cursor: pointer;
-            font-weight: 600;
-            text-decoration: none;
-            display: inline-block;
-            text-align: center;
-        }
+    /* FAQ & footer */
+    .faq{margin-top:18px;color:var(--muted);font-size:14px;line-height:1.5}
+    footer{margin:30px 0 50px;color:var(--muted);font-size:13px;text-align:center}
 
-        /* HERO */
-        .section { padding: 48px 20px; }
-        .container { max-width: 1120px; margin: 0 auto; }
-
-        .hero-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 32px;
-            align-items: center;
-        }
-
-        .hero-title { font-size: clamp(32px, 4vw, 40px); }
-        .hero-subtitle { color: var(--text-muted); max-width: 520px; font-size: 15px; }
-
-        .hero-bullets { margin-top: 22px; line-height: 1.5; }
-        .hero-bullets div span { color: var(--accent-strong); }
-
-        /* PAYMENT CARD */
-        .payment-card {
-            background: linear-gradient(145deg, rgba(12, 24, 52, 0.95), rgba(10, 21, 48, 0.96));
-            border-radius: 22px;
-            padding: 26px;
-            box-shadow: 0 26px 70px rgba(0,0,0,0.7);
-            border: 1px solid rgba(73,112,255,0.4);
-            position: relative;
-        }
-
-        .primary-btn {
-            margin-top: 20px;
-            padding: 14px 28px;
-            border-radius: 999px;
-            background: radial-gradient(circle at 0 0, var(--accent-strong), var(--accent-soft));
-            color: #fff;
-            font-weight: 600;
-            border: none;
-            cursor: pointer;
-            width: 100%;
-            text-align: center;
-        }
-
-        /* SCREENSHOTS */
-        .screenshots-section h2 { text-align:center; }
-        .section-subtitle { text-align:center; color:var(--text-muted); margin-bottom:20px; }
-
-        .screenshot-list {
-            display: grid;
-            gap: 30px;
-            max-width: 640px;
-            margin: 0 auto;
-        }
-
-        .screenshot-card {
-            background: var(--card-soft);
-            border-radius: 18px;
-            padding: 18px;
-            border: 1px solid rgba(255,255,255,0.03);
-            box-shadow: 0 16px 40px rgba(0,0,0,0.7);
-        }
-
-        /* 🔥 CENTER IMAGES */
-        .screenshot-card img {
-            margin-left: auto;
-            margin-right: auto;
-            border-radius: 14px;
-        }
-
-        /* MOBILE OPTIMIZATION */
-        @media(max-width: 768px) {
-
-            /* HERO becomes lighter */
-            .hero-subtitle { font-size: 14px; }
-            .hero-bullets div { font-size: 14px; }
-
-            /* 🔥 REORDER SECTIONS FOR MOBILE — screenshots appear earlier */
-            #screens {
-                order: 1;
-            }
-            #trust-block {
-                order: 2;
-            }
-            #payment-top {
-                order: 3;
-            }
-        }
-    </style>
+    /* mobile-first -> breakpoints */
+    @media(min-width:720px){
+      .wrap{padding:24px}
+      .ss-card{width:300px}
+      .price{font-size:34px}
+      .hero-sub{font-size:16px}
+    }
+    @media(min-width:1000px){
+      .inner-hero{display:flex;gap:24px;align-items:flex-start}
+      .left-col{flex:1}
+      .right-col{width:360px}
+      .ss-card{width:320px}
+    }
+  </style>
 </head>
 
 <body>
-<div class="page">
+  <header class="site-header">
+    <div class="inner">
+      <div class="logo">
+        <div class="badge">CV</div>
+        <div>
+          <div class="brand">CipherVault</div>
+          <div style="font-size:12px;color:var(--muted)">Offline, encrypted password vault (Android)</div>
+        </div>
+      </div>
 
-<header class="nav">
-    <div class="nav-inner">
-        <div style="display:flex;gap:10px;align-items:center;">
-            <div class="logo-circle">CV</div>
-            <div class="nav-title">CipherVault</div>
+      <button class="cta-top" onclick="startPayment()">Buy — 14.99 USD</button>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="hero inner-hero">
+      <div class="left-col">
+        <h1 class="hero-title">Offline, PIN-locked password vault — private, encrypted, simple</h1>
+        <p class="hero-sub">CipherVault keeps everything on your device: encrypted storage, fingerprint unlock, encrypted backups. No cloud, no accounts, just your passwords — safe and local.</p>
+
+        <div class="features">
+          <div class="feature"><strong>●</strong> Local-only storage — nothing leaves your phone</div>
+          <div class="feature"><strong>●</strong> PIN + fingerprint unlock</div>
+          <div class="feature"><strong>●</strong> Encrypted backup & restore</div>
+          <div class="feature"><strong>●</strong> Lifetime updates, one-time purchase</div>
         </div>
 
-        <a class="nav-btn" href="https://nowpayments.io/payment/?iid=5995440265&paymentId=5309732810" target="_blank">
-            Buy now – 14.99 USDT
-        </a>
-    </div>
-</header>
+        <div class="card right-col" style="max-width:420px;">
+          <div class="price">14.99 <small>USD · One-time</small></div>
+          <p style="color:var(--muted);margin:8px 0 0 0;font-size:13px">Secure download for Android (APK) after purchase.</p>
+          <button class="primary-btn" onclick="startPayment()">Buy CipherVault — Download instantly</button>
 
-<main>
-
-<section class="section section-alt">
-    <div class="container">
-      
-            <div>
-                <h2 class="hero-title">Offline, PIN-locked password vault for Android.</h2>
-                <p class="hero-subtitle">
-                    All passwords stay encrypted on your phone — no cloud, no email, no accounts.
-                </p>
-
-                <div class="hero-bullets">
-                    <div><span>◆</span> Local-only storage — nothing leaves your device.</div>
-                    <div><span>◆</span> 4-digit master PIN + fingerprint unlock.</div>
-                    <div><span>◆</span> Strong password generator.</div>
-                    <div><span>◆</span> Encrypted backup & restore.</div>
-                    <div><span>◆</span> Fingerprint Unlock.</div>
-                    <div><span>◆</span> No more passwords problem.</div>
-                    <div><span>◆</span> All your passwords safely organized in your hands.</div>
-                    <div><span>◆</span> STOP saving passwords in text Notes ❌.</div>
-                    <div><span>◆</span> Pay once and relax forever.</div>
-
-
-
-                </div>
-            </div>
-
-   
-    </div>
-</section>
-
-
-<section class="section section-alt">
-
-            <!-- Payment card stays on the right for desktop, moves lower on mobile -->
-            <div id="payment-top">
-                <div class="payment-card">
-                    <div class="price-line" style="font-size:32px;font-weight:700;">
-                        14.99 <span style="font-size:15px;">USDT TRC20</span>
-                    </div>
-                    <p style="font-size:14px;color:var(--text-muted);margin-top:8px;">
-                        One-time purchase · Lifetime updates
-                    </p>
-
-                    <a href="https://nowpayments.io/payment/?iid=5995440265&paymentId=5309732810" target="_blank">
-                        <button class="primary-btn">Buy CipherVault now →</button>
-                    </a>
-                </div>
-            </div>
-</section>
-
-
-
-<!-- SCREENSHOTS — NOW HIGHER ON MOBILE -->
-<section class="section screenshots-section" id="screens">
-    <div class="container">
-        <h2>See CipherVault in action</h2>
-        <p class="section-subtitle">Real in-app screenshots from the Android app.</p>
-
-        <div class="screenshot-list">
-
-            <div class="screenshot-card">
-                <h3>Simple main screen</h3>
-                <p>Two main actions: create a new password or view saved ones.</p>
-                <img src="main_screen.jpg" alt="">
-            </div>
-
-            <div class="screenshot-card">
-                <h3>Create a new password</h3>
-                <p>Generate strong passwords and save them securely.</p>
-                <img src="new_password.jpg" alt="">
-            </div>
-
-            <div class="screenshot-card">
-                <h3>Saved passwords</h3>
-                <p>Your encrypted credentials organized in one place.</p>
-                <img src="saved_passwords.jpg" alt="">
-            </div>
-
-            <div class="screenshot-card">
-                <h3>Encrypted backup</h3>
-                <p>Create a backup protected by your PIN.</p>
-                <img src="backup_screen.jpg" alt="">
-            </div>
-
-            <div class="screenshot-card">
-                <h3>Restore backup</h3>
-                <p>Restore your vault from an encrypted backup file.</p>
-                <img src="restore_screen.jpg" alt="">
-            </div>
-
-            <div class="screenshot-card">
-                <h3>All what you need</h3>
-                <p>CipherVault knows exactly the problem and provide the perfect solution.</p>
-                <img src="app_options.jpg" alt="">
-            </div>
-
-            <div class="screenshot-card">
-                <h3>Privacy Policy</h3>
-                <p>Clear, offline, and fully transparent.</p>
-                <img src="privacy_policy.jpg" alt="">
-            </div>
-
+          <div class="trust" aria-hidden="true" style="margin-top:12px">
+            <div class="pill">No cloud</div>
+            <div class="pill">Encrypted backups</div>
+            <div class="pill">PIN + Fingerprint</div>
+          </div>
         </div>
-    </div>
-</section>
+      </div>
 
+      <!-- screenshot prominent on the right for desktop, falls below on mobile -->
+      <div style="margin-top:12px;">
+        <div class="ss-card" style="max-width:380px;">
+          <img src="main_screen.jpg" alt="CipherVault main screen preview" loading="lazy">
+        </div>
+      </div>
+    </section>
 
+    <!-- Screenshots gallery -->
+    <section style="margin-top:6px;text-align:center">
+      <h2 style="margin:6px 0;font-size:18px">Screenshots</h2>
+      <p style="color:var(--muted);margin:0 0 12px 0;font-size:14px">Quick preview of the app UI — focused for Android users</p>
 
-<!-- CTA BOTTOM -->
-<section class="section" id="buy-bottom">
-    <div class="container" style="text-align:center;">
-        <h2>Ready to secure your passwords?</h2>
-        <p>One-time purchase. Lifetime access.</p>
+      <div class="screenshots" role="list">
+        <div class="ss-card" role="listitem"><img src="new_password.jpg" alt="Create new password" loading="lazy"></div>
+        <div class="ss-card" role="listitem"><img src="saved_passwords.jpg" alt="Saved passwords list" loading="lazy"></div>
+        <div class="ss-card" role="listitem"><img src="backup_screen.jpg" alt="Encrypted backup" loading="lazy"></div>
+        <div class="ss-card" role="listitem"><img src="restore_screen.jpg" alt="Restore backup" loading="lazy"></div>
+        <div class="ss-card" role="listitem"><img src="app_options.jpg" alt="App options" loading="lazy"></div>
+        <div class="ss-card" role="listitem"><img src="privacy_policy.jpg" alt="Privacy & offline policy" loading="lazy"></div>
+      </div>
+    </section>
 
-        <a href="https://nowpayments.io/payment/?iid=5995440265&paymentId=5309732810" target="_blank">
-            <button class="primary-btn">Buy CipherVault – 14.99 USDT</button>
-        </a>
-    </div>
-</section>
+    <!-- Short FAQ and reassurance for buyers -->
+    <section class="faq" aria-labelledby="faqTitle">
+      <h3 id="faqTitle" style="margin-top:18px">Quick questions</h3>
+      <p><strong>Q:</strong> How do I get the app after payment?<br>
+      <strong>A:</strong> After payment is confirmed you will be redirected to a secure download link on the thank-you page (or receive an emailed link if you prefer).</p>
 
-<footer>
-    <div class="container" style="font-size:12px;color:var(--text-muted);padding:20px 0;">
-        © <span id="year"></span> CipherVault. All rights reserved.
-    </div>
-</footer>
+      <p><strong>Q:</strong> Is this an APK for Android?<br>
+      <strong>A:</strong> Yes — CipherVault is an Android APK that you sideload. Full instructions are provided on download.</p>
 
-<script>
-    document.getElementById("year").textContent = new Date().getFullYear();
+      <p style="margin-top:10px;color:var(--muted)">Support & refunds: email support@ciphervault.vip (add your order id)</p>
+    </section>
+
+    <footer>
+      © <span id="year"></span> CipherVault • Offline encrypted password vault for Android
+    </footer>
+  </main>
+
+ <script>
+async function startPayment() {
+  try {
+    const resp = await fetch("/api/create-payment", { method: "POST", headers: { "Content-Type": "application/json" }});
+    const json = await resp.json();
+    if (json && json.payment_url && json.invoice_id) {
+      // Save invoice id so thank-you page can exchange it later
+      try { localStorage.setItem("ciphervault_invoice_id", json.invoice_id); } catch(e) { /* ignore */ }
+      window.location.href = json.payment_url;
+    } else {
+      console.error("Create payment failed", json);
+      alert("Could not create payment. Try again.");
+    }
+  } catch (err) {
+    console.error(err);
+    alert("Server error. Try again.");
+  }
+}
 </script>
 
-</div>
-</main>
+
 </body>
 </html>

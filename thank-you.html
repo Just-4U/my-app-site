@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Thank you — CipherVault</title>
+  <link rel="icon" href="favicon1.png">
+
+  <!-- TikTok Pixel Code -->
+  <script>
+  !function (w, d, t) {
+      w.TiktokAnalyticsObject = t;
+      var ttq = w[t] = w[t] || [];
+      ttq.methods = ["page", "track", "identify", "instances", "debug", "on", "off", "once", "ready", "alias", "group", "enableCookie", "disableCookie"],
+      ttq.setAndDefer = function (t, e) { t[e] = function () { t.push([e].concat(Array.prototype.slice.call(arguments, 0))) } };
+      for (var i = 0; i < ttq.methods.length; i++) ttq.setAndDefer(ttq, ttq.methods[i]);
+      ttq.load = function (e, n) {
+          var i = "https://analytics.tiktok.com/i18n/pixel/events.js";
+          ttq._i = ttq._i || {}, ttq._i[e] = [], ttq._i[e]._u = i, ttq._t = ttq._t || {}, ttq._t[e] = +new Date,
+          ttq._o = ttq._o || {}, ttq._o[e] = n || {};
+          var o = document.createElement("script");
+          o.type = "text/javascript", o.async = !0, o.src = i + "?sdkid=" + e + "&lib=" + t;
+          var a = document.getElementsByTagName("script")[0];
+          a.parentNode.insertBefore(o, a)
+      };
+      ttq.load('D4R8OD3C77U004BG82M0'); /* your Pixel ID */
+      ttq.page();
+  }(window, document, 'ttq');
+  </script>
+  <!-- End TikTok Pixel Code -->
+
+  <style>
+    body{font-family:Inter,Arial,sans-serif;display:flex;align-items:center;justify-content:center;height:100vh;margin:0;background:#041025;color:#fff;text-align:center}
+    .box{max-width:720px;padding:20px}
+    .btn{display:inline-block;margin-top:14px;padding:12px 18px;border-radius:10px;background:#3aa9ff;color:#fff;text-decoration:none;font-weight:700}
+  </style>
+</head>
+
+<body>
+  <div class="box">
+    <h1>Thank you for purchasing CipherVault 🎉</h1>
+    <p id="message">Validating your purchase...</p>
+    <a id="downloadBtn" class="btn" style="display:none" href="#">Download CipherVault</a>
+  </div>
+
+  <!-- SECURE VERIFIED PAYMENT SCRIPT -->
+  <script>
+    const invoiceId = localStorage.getItem("ciphervault_invoice_id");
+
+    async function checkAndDownload() {
+      const messageEl = document.getElementById("message");
+      const downloadBtn = document.getElementById("downloadBtn");
+
+      if (!invoiceId) {
+        messageEl.textContent =
+          "No invoice found. Please contact support if you completed payment.";
+        return;
+      }
+
+      messageEl.textContent = "Checking payment status...";
+
+      try {
+        const resp = await fetch(`/api/exchange?invoice_id=${encodeURIComponent(invoiceId)}`);
+        const json = await resp.json();
+
+        if (json.ok && json.download_url) {
+          messageEl.textContent = "Payment verified — starting secure download...";
+
+          if (window.ttq) {
+            try { ttq.track("CompletePayment", { value: 14.99, currency: "USD" }); } catch(e){}
+          }
+
+          window.location.href = json.download_url;
+
+          downloadBtn.style.display = "inline-block";
+          downloadBtn.href = json.download_url;
+        } else {
+          messageEl.textContent =
+            `Payment pending (status: ${json.status || 'unknown'}). Refresh this page shortly.`;
+        }
+      } catch (err) {
+        console.error(err);
+        messageEl.textContent =
+          "Server error while verifying payment. Please refresh or contact support.";
+      }
+    }
+
+    checkAndDownload();
+  </script>
+
+</body>
+</html>
