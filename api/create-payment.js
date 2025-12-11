@@ -13,7 +13,7 @@ export default async function handler(req, res) {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        price_amount: 14.99,
+        price_amount: 0.2,
         price_currency: "USD",
 
         // 🔥 Correct code for USDT TRON (Invoice endpoint)
@@ -39,3 +39,4 @@ export default async function handler(req, res) {
     res.status(500).json({ error: "Server error" });
   }
 }
+
