@@ -4,11 +4,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { NOWPAYMENTS_API_KEY, NOWPAYMENTS_PUBLIC_KEY } = process.env;
-
-    if (!NOWPAYMENTS_API_KEY || !NOWPAYMENTS_PUBLIC_KEY) {
-      return res.status(500).json({ error: "Missing API keys" });
-    }
+    const { NOWPAYMENTS_API_KEY } = process.env;
 
     const response = await fetch("https://api.nowpayments.io/v1/invoice", {
       method: "POST",
@@ -19,7 +15,10 @@ export default async function handler(req, res) {
       body: JSON.stringify({
         price_amount: 14.99,
         price_currency: "usd",
-        pay_currency: "usdt",   // <<< FIXED CURRENCY (previous ANY was failing)
+
+        // 🔥 FIX: do not use ANY or USDT
+        pay_currency: "usdt_trc20",
+
         order_description: "CipherVault Lifetime Purchase",
         success_url: "https://www.ciphervault.vip/thank-you.html",
         cancel_url: "https://www.ciphervault.vip/"
